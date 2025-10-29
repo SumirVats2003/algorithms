@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class KMP {
   public static int[] fillLPS(String s) {
     int n = s.length();
@@ -24,12 +27,37 @@ public class KMP {
     return lps;
   }
 
-  public static void main(String[] args) {
-    String str = "abcbabca";
-    int[] lps = fillLPS(str);
+  public static List<Integer> kmpSearch(String pattern, String text) {
+    int N = text.length();
+    int M = pattern.length();
+    int[] lps = fillLPS(pattern);
+    List<Integer> result = new ArrayList<>();
 
-    for (int i : lps) {
-      System.out.println(i);
+    int i = 0, j = 0;
+
+    while (i < N) {
+      if (text.charAt(i) == pattern.charAt(j)) {
+        i++;
+        j++;
+      }
+      if (j == M) {
+        result.add(i - j);
+        j = lps[j - 1];
+      } else if (i < N && text.charAt(i) != pattern.charAt(j)) {
+        if (j == 0)
+          i++;
+        else
+          j = lps[j - 1];
+      }
     }
+    return result;
+  }
+
+  public static void main(String[] args) {
+    String str = "ababaababaad";
+    String pat = "ababa";
+
+    List<Integer> result = kmpSearch(pat, str);
+    System.out.println(result.toString());
   }
 }
